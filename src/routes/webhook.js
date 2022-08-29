@@ -19,7 +19,7 @@ app.post("/", async (req, res) => {
             timestamp,
             message
         });
-        //await msg.save();
+        await msg.save();
 
         if (req.body.object) {
             if (
