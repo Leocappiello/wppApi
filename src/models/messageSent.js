@@ -14,7 +14,7 @@ const messageSentSchema = new mongoose.Schema({
     timestamp: {
         type: Number,
     },
-    text: {
+    message: {
         type: String
     }
 })

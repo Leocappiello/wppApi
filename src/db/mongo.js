@@ -19,10 +19,9 @@ const client = new MongoClient(uri, {
 (status == 'local') ? url = process.env.DB : url = uri  
 
 mongoose.connect(url)
+        .then(() => status)
         .then(() => {
             const collection = client.db("test").collection("messages");
-            // perform actions on the collection object
         })
         .then(() => console.log("DB Connected"))
-        //.then(() => console.log(url))
         .catch(e => console.log('db error:' + e))

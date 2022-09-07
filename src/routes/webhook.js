@@ -9,9 +9,17 @@ const token = process.env.WHATSAPP_TOKEN;
 // Accepts POST requests at /webhook endpoint
 app.post("/", async (req, res) => {
     try {
-        let {from, id, type, timestamp} = req.body.entry[0].changes[0].value.messages[0]
+
+        
+        let {
+            from,
+            id,
+            type,
+            timestamp
+        } = req.body.entry[0].changes[0].value.messages[0]
         let message = req.body.entry[0].changes[0].value.messages[0].text.body
 
+        console.log( req.body.entry[0].changes[0].value)
         const msg = new messageSchema({
             from,
             id,
@@ -20,7 +28,9 @@ app.post("/", async (req, res) => {
             message
         });
         await msg.save();
-
+        
+       console.log(req.body)
+        
         if (req.body.object) {
             if (
                 req.body.entry &&
@@ -29,7 +39,7 @@ app.post("/", async (req, res) => {
                 req.body.entry[0].changes[0].value.messages &&
                 req.body.entry[0].changes[0].value.messages[0]
             ) {
-                let {phone_number_id, from} = req.body.entry[0].changes[0].value.messages[0]
+                let { phone_number_id, from } = req.body.entry[0].changes[0].value.messages[0]
                 let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
 
                 /*
@@ -39,8 +49,16 @@ app.post("/", async (req, res) => {
                 */
 
                 //POST message received
+                console.log(`from: ${from}`)
                 fetchMessageReceived(phone_number_id, token, from, msg_body)
             }
+            if(req.body.entry[0].changes[0].value.statuses){
+                console.log("estado del mensaje:", req.body.entry[0].changes[0].value.statuses[0].status)
+                if(req.body.entry[0].changes[0].value.statuses[0].status == 'failed'){
+                    console.log("mensaje fallido")
+                }
+            }
+
             res.sendStatus(200);
         } else {
             res.sendStatus(404); // Return a '404 Not Found' if event is not from a WhatsApp API
